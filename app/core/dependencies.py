@@ -39,3 +39,20 @@ def get_current_user(
         raise credentials_exception
 
     return user
+from app.models.user import UserRole
+
+
+def require_role(*allowed_roles: UserRole):
+    """
+    Faqat berilgan rollardan biriga ega bo'lgan userlarga ruxsat beradigan dependency factory.
+    Masalan: Depends(require_role(UserRole.ADMIN))
+    """
+    def role_checker(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Bu amal uchun ruxsatingiz yo'q",
+            )
+        return current_user
+
+    return role_checker
