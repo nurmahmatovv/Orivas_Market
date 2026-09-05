@@ -13,11 +13,6 @@ class LocationRepository:
         return self.db.query(Location).filter(Location.id == location_id).first()
 
     def get_by_name_and_parent(self, name: str, parent_id: uuid.UUID | None) -> Location | None:
-        """
-        Bir xil nomli location turli ota-location ostida bo'lishi mumkin
-        (masalan ikki viloyatda "Markaziy" degan tuman bo'lishi mumkin),
-        shuning uchun name + parent_id birgalikda tekshiriladi.
-        """
         return (
             self.db.query(Location)
             .filter(Location.name == name, Location.parent_id == parent_id)
@@ -33,9 +28,22 @@ class LocationRepository:
     def get_children(self, parent_id: uuid.UUID) -> list[Location]:
         return self.db.query(Location).filter(Location.parent_id == parent_id).all()
 
+    def get_ids_including_children(self, location_id: uuid.UUID) -> list[uuid.UUID]:
+        """
+        Berilgan location ID'ni va uning barcha bevosita farzandlari ID'larini qaytaradi.
+        Masalan: Toshkent ID berilsa -> [Toshkent_id, Sergeli_id, Chilonzor_id, ...]
+        Sergeli ID berilsa -> [Sergeli_id] (chunki uning farzandi yo'q)
+
+        Bu orqali "Toshkent" bo'yicha qidiruv butun viloyatni,
+        "Sergeli" bo'yicha qidiruv faqat o'sha tumanni qamrab oladi.
+        """
+        ids = [location_id]
+        children = self.get_children(location_id)
+        ids.extend([child.id for child in children])
+        return ids
+
     def create(self, location: Location) -> Location:
         self.db.add(location)
         self.db.commit()
         self.db.refresh(location)
         return location
-    
