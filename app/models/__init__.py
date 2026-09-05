@@ -3,3 +3,5 @@ from app.models.location import Location, LocationLevel  # noqa: F401
 from app.models.category import Category  # noqa: F401
 from app.models.listing import Listing, ListingType, ListingStatus, Currency  # noqa: F401
 from app.models.listing_image import ListingImage  # noqa: F401
+from app.models.conversation import Conversation  # noqa: F401
+from app.models.message import Message  # noqa: F401

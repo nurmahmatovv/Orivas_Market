@@ -6,6 +6,19 @@ from app.core.config import settings
 from app.routers import admin_router, auth_router, category_router, favorite_router, listing_router, listing_image_router, location_router
 
 # ...
+from app.routers import (
+    admin_router,
+    auth_router,
+    category_router,
+    chat_router,
+    favorite_router,
+    listing_image_router,
+    listing_router,
+    location_router,
+)
+
+# ...
+
 
 # ...
 from fastapi.staticfiles import StaticFiles
@@ -22,7 +35,7 @@ app.include_router(location_router.router)
 app.include_router(listing_router.router)
 app.include_router(favorite_router.router)
 app.include_router(listing_image_router.router)
-
+app.include_router(chat_router.router)
 # ...
 app.include_router(admin_router.router)
 # ...
